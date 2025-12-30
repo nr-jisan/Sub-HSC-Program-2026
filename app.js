@@ -11,6 +11,32 @@ const EVENT_INFO = {
   organizer: "State University of Bangladesh"
 };
 
+function sendToServerJSONP(paramsObj){
+  return new Promise((resolve, reject) => {
+    const callbackName = "cb_" + Date.now() + "_" + Math.floor(Math.random()*1000);
+
+    window[callbackName] = (data) => {
+      try { resolve(data); }
+      finally {
+        delete window[callbackName];
+        script.remove();
+      }
+    };
+
+    const qs = new URLSearchParams({ ...paramsObj, callback: callbackName }).toString();
+    const script = document.createElement("script");
+    script.src = SCRIPT_URL + "?" + qs;
+    script.onerror = () => {
+      delete window[callbackName];
+      script.remove();
+      reject(new Error("Network / Apps Script error"));
+    };
+
+    document.body.appendChild(script);
+  });
+}
+
+
 function $(id){ return document.getElementById(id); }
 
 function showToast(type, msg){
@@ -103,7 +129,6 @@ function setupForm(){
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const serial = getNextSerial();
 
     const data = {
       serial: String(serial),
@@ -158,43 +183,44 @@ function setupForm(){
       submitBtn.textContent = "Submitting...";
     }
 
-    try{
-      const params = new URLSearchParams({
-        serial: data.serial,
-        coming: data.coming,
-        name: data.name,
-        board: data.board,
-        reg: data.reg,
-        roll: data.roll,
-        phone: data.phone,
-        submittedAt: data.submittedAt
-      });
+try {
+  const result = await sendToServerJSONP({
+    coming: data.coming,
+    name: data.name,
+    board: data.board,
+    reg: data.reg,
+    roll: data.roll,
+    phone: data.phone,
+    submittedAt: data.submittedAt
+  });
 
-      // Using no-cors for maximum compatibility with Apps Script
-      await fetch(SCRIPT_URL, {
-        method: "POST",
-        body: params,
-        mode: "no-cors"
-      });
+  if(result.status === "duplicate"){
+    showToast("err", "এই রেজিস্ট্রেশন ও রোল দিয়ে ইতিমধ্যে সাবমিট করা হয়েছে।");
+    if(submitBtn){ submitBtn.disabled = false; submitBtn.textContent = "Submit"; }
+    return;
+  }
 
-      // Mark as submitted (client-side duplicate block)
-      dupeSet[key] = true;
-      saveDuplicateSet(dupeSet);
+  if(result.status !== "ok"){
+    showToast("err", result.message || "সাবমিট হয়নি। Apps Script চেক করো।");
+    if(submitBtn){ submitBtn.disabled = false; submitBtn.textContent = "Submit"; }
+    return;
+  }
 
-      // Increment serial counter
-      markSerialUsed(serial);
+  // ✅ SERVER SERIAL
+  data.serial = String(result.serial);
 
-      showToast("ok", "সাবমিট সফল হয়েছে! ইনভাইটেশন কার্ড তৈরি হচ্ছে...");
-      setTimeout(() => window.location.href = "invite.html", 700);
+  // Save locally for invite page
+  saveRSVP(data);
 
-    }catch(err){
-      console.error(err);
-      showToast("err", "সাবমিট হয়নি। ইন্টারনেট/Apps Script Deploy/URL চেক করো।");
-      if(submitBtn){
-        submitBtn.disabled = false;
-        submitBtn.textContent = "Submit";
-      }
-    }
+  showToast("ok", "সাবমিট সফল হয়েছে! ইনভাইটেশন কার্ড তৈরি হচ্ছে...");
+  setTimeout(() => window.location.href = "invite.html", 700);
+
+} catch(err){
+  console.error(err);
+  showToast("err", "সাবমিট হয়নি। ইন্টারনেট/Apps Script Deploy/URL চেক করো।");
+  if(submitBtn){ submitBtn.disabled = false; submitBtn.textContent = "Submit"; }
+}
+
   });
 }
 
