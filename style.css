@@ -1,0 +1,629 @@
+:root{
+  --paper:#f6f0db;
+  --paper2:#fbf7e8;
+  --ink:#111827;
+
+  --green:#0c8f57;
+  --green2:#0aa86a;
+  --red:#e53935;
+  --yellow:#ffd400;
+  --border:#e6ddc6;
+
+  --muted:#586174;
+  --white:#ffffff;
+}
+
+*{ box-sizing:border-box; margin:0; padding:0; }
+
+body{
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: var(--ink);
+  min-height: 100vh;
+  background:
+    radial-gradient(1200px 700px at 20% 10%, var(--paper2) 0%, transparent 60%),
+    radial-gradient(900px 600px at 90% 30%, #fff2cc 0%, transparent 55%),
+    linear-gradient(180deg, var(--paper) 0%, #f8f2df 100%);
+}
+
+.container{
+  width: min(980px, 92%);
+  margin: 0 auto;
+  padding: 14px 0 34px;
+}
+
+/* HEADER */
+.header{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding: 22px 16px;
+  border: 2px solid rgba(12,143,87,.20);
+  background:
+    radial-gradient(900px 520px at 30% 15%, rgba(34, 197, 94, .10) 0%, transparent 60%),
+    radial-gradient(900px 520px at 70% 20%, rgba(253, 224, 71, .10) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(255,255,255,.96) 0%, rgba(250,252,250,.88) 100%);
+  border-radius: 22px;
+  position: static; /* ✅ no moving */
+}
+
+.brand{
+  display:flex;
+  flex-direction: column;
+  align-items:center;
+  gap: 10px;
+  text-align:center;
+}
+
+.brand img{
+  width: 220px;
+  height: auto;
+  object-fit: contain;
+  background: none;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  filter: drop-shadow(0 10px 18px rgba(0,0,0,.12));
+}
+
+.brand .title h1{
+  font-size: 20px;
+  font-weight: 1000;
+  letter-spacing: .3px;
+}
+
+.brand .title p{
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+/* HERO */
+.hero{
+  margin-top: 18px;
+  padding: 26px 18px;
+  border-radius: 22px;
+  border: 2px solid rgba(12,143,87,.18);
+  background:
+    radial-gradient(900px 520px at 20% 10%, rgba(34, 197, 94, .14) 0%, transparent 55%),
+    radial-gradient(900px 520px at 90% 20%, rgba(253, 224, 71, .14) 0%, transparent 55%),
+    linear-gradient(180deg, rgba(255,255,255,.90) 0%, rgba(248,253,249,.78) 100%);
+  box-shadow: 0 18px 40px rgba(0,0,0,.08);
+  display:grid;
+  gap: 14px;
+  text-align:center;
+  align-items:center;
+  justify-items:center;
+}
+
+.hero h2{
+  font-size: 22px;
+  font-weight: 1000;
+  letter-spacing: .2px;
+}
+
+.hero p{
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.65;
+  max-width: 700px;
+}
+
+/* CARD */
+.card{
+  margin-top: 16px;
+  border-radius: 22px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.85);
+  padding: 16px;
+}
+
+.form-card{
+  width: min(860px, 100%);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* PRO FORM (ONE-BY-ONE even on PC) */
+.pro-form{
+  display: grid;
+  gap: 14px; /* ✅ same gap everywhere */
+}
+
+.field{
+  display:flex;
+  flex-direction:column;
+  gap: 8px;
+}
+
+label{
+  font-size: 13px;
+  font-weight: 900;
+}
+
+input, select{
+  padding: 12px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(15,23,42,.14);
+  outline:none;
+  background:#fff;
+  font-size: 14px;
+  height: 46px;
+}
+
+input:focus, select:focus{
+  border-color: rgba(12,143,87,.55);
+  box-shadow: 0 0 0 4px rgba(12,143,87,.12);
+}
+
+/* Select arrow */
+select{
+  appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, rgba(17,24,39,.7) 50%),
+    linear-gradient(135deg, rgba(17,24,39,.7) 50%, transparent 50%);
+  background-position:
+    calc(100% - 18px) 19px,
+    calc(100% - 12px) 19px;
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+  padding-right: 38px;
+}
+
+/* Buttons */
+.actions{
+  display:flex;
+  gap: 12px;
+  margin-top: 8px;
+  flex-wrap:wrap;
+  justify-content:center;
+  width: 100%;
+}
+
+.btn{
+  border:none;
+  cursor:pointer;
+  padding: 12px 16px;
+  border-radius: 16px;
+  font-weight: 1000;
+  font-size: 14px;
+  transition: transform .08s ease, box-shadow .15s ease;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  text-decoration:none;
+  min-width: 240px;
+  box-shadow: 0 12px 24px rgba(0,0,0,.10);
+}
+
+.btn:active{ transform: scale(.98); }
+
+.btn-green{
+  background: linear-gradient(180deg, var(--green2), var(--green));
+  color: #fff;
+}
+
+.btn-outline{
+  background: rgba(255,255,255,.92);
+  border: 2px solid rgba(12,143,87,.25);
+  color: var(--ink);
+  box-shadow: none;
+}
+
+.btn:focus{
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(12,143,87,.16), 0 12px 24px rgba(0,0,0,.10);
+}
+
+/* Toast */
+.toast{
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  display:none;
+  background:#fff;
+  font-size: 13px;
+}
+.toast.show{ display:block; }
+.toast.ok{ border-color: rgba(12,143,87,.35); background: rgba(12,143,87,.08); }
+.toast.err{ border-color: rgba(229,57,53,.35); background: rgba(229,57,53,.08); }
+
+.small{
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.footer{
+  margin-top: 20px;
+  color: var(--muted);
+  font-size: 12px;
+  text-align:center;
+}
+
+/* Mobile tweaks */
+@media (max-width: 720px){
+  .brand img{ width: 170px; }
+  .brand .title h1{ font-size: 17px; }
+  .hero h2{ font-size: 18px; }
+  .btn{ min-width: 100%; }
+}
+
+
+/* =========================
+   INVITATION CARD (CLEAN + NO STRETCH)
+========================= */
+
+.invite-wrap{ margin-top: 16px; }
+
+.invite-card{
+  width: min(980px, 100%);
+  margin: 0 auto;
+  border-radius: 26px;
+  overflow: hidden;
+  border: 2px solid rgba(12,143,87,.18);
+  background: rgba(255,255,255,.88);
+  box-shadow: 0 18px 40px rgba(0,0,0,.10);
+}
+
+.invite-card.themed{
+  background:
+    radial-gradient(900px 520px at 20% 10%, rgba(34, 197, 94, .10) 0%, transparent 60%),
+    radial-gradient(900px 520px at 85% 25%, rgba(253, 224, 71, .12) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(255,255,255,.96) 0%, rgba(250,252,250,.88) 100%);
+}
+
+/* Banner */
+.invite-banner{
+  display: grid;
+  grid-template-columns: 1fr 1.4fr 0.8fr;
+  gap: 12px;
+  align-items: center;
+  padding: 16px 18px;
+  border-bottom: 2px solid rgba(12,143,87,.16);
+  background:
+    radial-gradient(1000px 400px at 50% 0%, rgba(255, 212, 0, .14) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(246,240,219,.9) 0%, rgba(255,255,255,.75) 100%);
+}
+.invite-banner{
+  grid-template-columns: 1fr 1.4fr 0.8fr !important;
+}
+
+
+.banner-left{
+  display:flex;
+  align-items:center;
+}
+
+/* ✅ FIX: logo never stretches */
+.mini-logo{
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  display:block;
+  flex: 0 0 auto;
+  filter: drop-shadow(0 6px 10px rgba(0,0,0,.12));
+}
+
+.banner-center{ text-align:center; }
+
+.festival-top{
+  font-weight: 1000;
+  color: var(--red);
+  font-size: 18px;
+}
+
+.festival-main{
+  margin-top: 4px;
+  font-weight: 1000;
+  font-size: 56px;
+  color: var(--yellow);
+  text-shadow:
+    3px 3px 0 var(--green),
+    -3px 3px 0 var(--green),
+    3px -3px 0 var(--green),
+    -3px -3px 0 var(--green),
+    0 14px 30px rgba(0,0,0,.14);
+  line-height: 1;
+}
+
+.festival-year{
+  margin-top: 4px;
+  font-weight: 1000;
+  color: rgba(17,24,39,.85);
+  letter-spacing: .4px;
+}
+
+/* ✅ Pro SL badge */
+.banner-right{
+  text-align:right;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap: 8px;
+}
+
+.sl-label{
+  font-size: 12px;
+  font-weight: 1000;
+  letter-spacing: 1px;
+  color: rgba(17,24,39,.55);
+}
+
+.sl-no{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding: 10px 14px;
+  border-radius: 16px;
+  border: 2px solid rgba(12,143,87,.22);
+  background: rgba(255,255,255,.82);
+  box-shadow: 0 10px 20px rgba(0,0,0,.08);
+  font-size: 22px;
+  font-weight: 1100;
+  letter-spacing: 1px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Body */
+.invite-body-pro{ padding: 18px; }
+
+.invite-nameblock{ padding: 6px 4px 12px; }
+
+.muted{
+  color: rgba(17,24,39,.55);
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.big-name{
+  margin-top: 6px;
+  font-size: 30px;
+  font-weight: 1100;
+  letter-spacing: .2px;
+}
+
+.grid-2{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 10px;
+}
+
+.info-box{
+  border-radius: 18px;
+  border: 2px dashed rgba(12,143,87,.22);
+  background: rgba(12,143,87,.05);
+  padding: 14px;
+}
+
+.info-box .cap{
+  font-size: 13px;
+  color: rgba(17,24,39,.6);
+  font-weight: 900;
+}
+
+.info-box .val{
+  margin-top: 6px;
+  font-size: 18px;
+  font-weight: 1000;
+  color: rgba(17,24,39,.92);
+  word-break: break-word;
+}
+
+.span-2{ grid-column: 1 / -1; }
+
+.invite-footerline{
+  margin-top: 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 12px;
+  padding-top: 14px;
+  border-top: 2px solid rgba(12,143,87,.14);
+}
+
+.note{
+  font-size: 12px;
+  color: rgba(17,24,39,.65);
+  font-weight: 800;
+}
+
+.stamp{
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(12,143,87,.12);
+  border: 2px solid rgba(12,143,87,.25);
+  color: rgba(12,143,87,1);
+  font-weight: 1000;
+  letter-spacing: .8px;
+}
+
+
+/* =========================
+   LOGO FIX (NON-SQUARE IMAGE SAFE)
+========================= */
+
+.logo-box{
+  width: 120px;
+  height: 120px;           /* ✅ square container */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+
+.logo-box img{
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;     /* ✅ keeps aspect ratio */
+  display: block;
+  filter: drop-shadow(0 6px 10px rgba(0,0,0,.12));
+}
+
+* {
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+body {
+  background: #e9f5f1;
+  margin: 0;
+  padding: 0;
+}
+
+.page-wrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+/* CARD */
+.invite-card {
+  width: 1050px;
+  background: linear-gradient(135deg, #fff7e8, #eaf6f2);
+  border-radius: 28px;
+  padding: 30px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  transform-origin: top center;
+}
+
+/* HEADER */
+.invite-header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 20px;
+}
+
+.logo {
+  height: 55px;
+}
+
+.title-center {
+  text-align: center;
+}
+
+.title-center h1 {
+  margin: 0;
+  font-size: 42px;
+  color: #0b7d3e;
+}
+
+.title-center h4 {
+  margin: 0;
+  color: #e53935;
+}
+
+.sl-box {
+  border: 2px solid #bfe5d7;
+  padding: 10px 18px;
+  border-radius: 16px;
+  text-align: center;
+}
+
+.sl-box strong {
+  font-size: 24px;
+}
+
+/* BODY */
+.invite-body {
+  padding: 25px 0;
+}
+
+.invite-to {
+  color: #777;
+}
+
+.invite-body h2 {
+  margin-top: 0;
+  font-size: 32px;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.field {
+  border: 2px dashed #bfe5d7;
+  border-radius: 18px;
+  padding: 14px 18px;
+}
+
+.field span {
+  display: block;
+  color: #777;
+  font-size: 14px;
+}
+
+.field b {
+  font-size: 20px;
+}
+
+.field.full {
+  grid-column: span 2;
+}
+
+/* FOOTER */
+.invite-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.confirm-btn {
+  background: #1b9a59;
+  border: none;
+  color: #fff;
+  padding: 12px 26px;
+  font-size: 16px;
+  border-radius: 22px;
+}
+
+/* =========================
+   SCALE ONLY (NO STRUCTURE CHANGE)
+   ========================= */
+
+@media (max-width: 1020px) {
+  .invite-card {
+    transform: scale(calc(100vw / 1100));
+  }
+}
+
+@media (max-width: 420px) {
+  .invite-card {
+    transform: scale(0.55);
+  }
+}
+
+
+/* Mobile: scale the whole card instead of changing layout */
+@media (max-width: 1020px){
+  .invite-card{
+    transform-origin: top center;
+    transform: scale(calc((100vw - 24px) / 980));
+  }
+
+  /* because scaled element still keeps original height, reduce empty space */
+  .invite-wrap{
+    padding-bottom: 10px;
+  }
+}
+
+/* Very small phones: minimum safe scale */
+@media (max-width: 420px){
+  .invite-card{
+    transform: scale(0.40);
+  }
+}
+.invite-footerline{
+  flex-direction: row !important;
+  align-items: center !important;
+}
+

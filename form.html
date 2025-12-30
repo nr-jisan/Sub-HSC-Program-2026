@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RSVP - Form</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body data-page="form">
+  <div class="container">
+
+    <header class="header">
+      <div class="brand">
+        <img src="assets/logo.png" alt="Logo">
+        <div class="title">
+          <h1>State University of Bangladesh</h1>
+          <p>HSC Reception RSVP • Registration Form</p>
+        </div>
+      </div>
+    </header>
+
+    <section class="hero">
+      <h2>আপনার তথ্য দিন</h2>
+      <p>সব তথ্য সঠিকভাবে দিন। একবার সাবমিট হলে একই রেজিস্ট্রেশন ও রোল দিয়ে আবার সাবমিট করা যাবে না।</p>
+    </section>
+
+    <section class="card form-card">
+      <form id="rsvpForm" class="pro-form" novalidate>
+
+        <div class="field">
+          <label for="name">নাম</label>
+          <input id="name" type="text" placeholder="আপনার নাম লিখুন" autocomplete="name" required />
+        </div>
+
+        <div class="field">
+          <label for="board">বোর্ড</label>
+          <select id="board" required>
+            <option value="" selected disabled>বোর্ড সিলেক্ট করুন</option>
+            <option value="Dhaka">Dhaka</option>
+            <option value="Chattogram">Chattogram</option>
+            <option value="Rajshahi">Rajshahi</option>
+            <option value="Khulna">Khulna</option>
+            <option value="Barishal">Barishal</option>
+            <option value="Sylhet">Sylhet</option>
+            <option value="Dinajpur">Dinajpur</option>
+            <option value="Cumilla">Cumilla</option>
+            <option value="Mymensingh">Mymensingh</option>
+            <option value="Madrasah">Madrasah</option>
+            <option value="Technical">Technical</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="reg">রেজিস্ট্রেশন নম্বর</label>
+          <input id="reg" type="text" inputmode="numeric" placeholder="Registration No." required />
+        </div>
+
+        <div class="field">
+          <label for="roll">রোল নম্বর</label>
+          <input id="roll" type="text" inputmode="numeric" placeholder="Roll No." required />
+        </div>
+
+        <div class="field">
+          <label for="phone">মোবাইল নম্বর</label>
+          <input id="phone" type="tel" inputmode="tel" placeholder="01XXXXXXXXX" autocomplete="tel" required />
+        </div>
+
+        <div class="actions">
+          <button id="submitBtn" class="btn btn-green" type="submit">Submit</button>
+          <a class="btn btn-outline" href="index.html">Back</a>
+        </div>
+
+        <div id="toast" class="toast"></div>
+
+        <p class="small">
+          * Submit করার পরে আপনি ইনভাইটেশন কার্ড দেখতে পাবেন এবং PNG/PDF ডাউনলোড করতে পারবেন।
+        </p>
+      </form>
+    </section>
+
+    <div class="footer">© RSVP WebApp</div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
