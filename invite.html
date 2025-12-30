@@ -1,133 +1,107 @@
 <!DOCTYPE html>
+
 <html lang="bn">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>RSVP - Invitation</title>
-  <link rel="stylesheet" href="style.css"/>
-
-  <!-- For PNG -->
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-  <!-- For PDF -->
-  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RSVP - Invitation</title>
+<link href="style.css" rel="stylesheet"/>
+<!-- For PNG -->
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<!-- For PDF -->
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 </head>
-
 <body data-page="invite">
-  <div class="container">
-
-    <header class="header">
-      <div class="brand">
-        <img src="assets/logo.png" alt="Logo">
-        <div class="title">
-          <h1>HSC Reception RSVP</h1>
-          <p>Invitation Card</p>
-        </div>
-      </div>
-    </header>
-
-    <section class="hero">
-      <h2>Invitation Card Ready ✅</h2>
-      <p>নিচের কার্ডটি PNG অথবা PDF হিসেবে ডাউনলোড করতে পারবেন।</p>
-    </section>
-
-    <section class="invite-wrap">
-      <!-- Invitation Card -->
-      <div id="inviteCard" class="invite-card themed">
-
-        <!-- Top Banner -->
-        <div class="invite-banner">
-          <!-- Left: Only Logo (NO extra university name text) -->
-        <div class="banner-left">
-        <div class="logo-box">
-            <img
-            src="assets/logo.png"
-            alt="Logo"
-            crossorigin="anonymous"
-            decoding="async"
-            loading="eager"
-            />
-        </div>
-        </div>
-
-
-          <!-- Center: Festival -->
-          <div class="banner-center">
-            <div class="festival-top">এইচএসসি উত্তীর্ণ শিক্ষার্থী</div>
-            <div class="festival-main">উৎসব</div>
-            <div class="festival-year">২০২৫</div>
-          </div>
-
-          <!-- Right: SL Badge -->
-          <div class="banner-right">
-            <div class="sl-label">SL NO</div>
-            <div id="slNo" class="sl-no">—</div>
-          </div>
-        </div>
-
-        <!-- Body -->
-        <div class="invite-body-pro">
-          <div class="invite-nameblock">
-            <div class="muted">Specially invited</div>
-            <div id="cardName" class="big-name">Guest Name</div>
-          </div>
-
-          <div class="grid-2">
-            <div class="info-box">
-              <div class="cap">Board</div>
-              <div id="mBoard" class="val">—</div>
-            </div>
-
-            <div class="info-box">
-              <div class="cap">Registration No.</div>
-              <div id="mReg" class="val">—</div>
-            </div>
-
-            <div class="info-box">
-              <div class="cap">Roll No.</div>
-              <div id="mRoll" class="val">—</div>
-            </div>
-
-            <div class="info-box">
-              <div class="cap">Mobile</div>
-              <div id="mPhone" class="val">—</div>
-            </div>
-
-            <div class="info-box">
-              <div class="cap">Date</div>
-              <div id="eventDate" class="val">—</div>
-            </div>
-
-            <div class="info-box">
-              <div class="cap">Time</div>
-              <div id="eventTime" class="val">—</div>
-            </div>
-
-            <div class="info-box span-2">
-              <div class="cap">Venue</div>
-              <div id="eventVenue" class="val">—</div>
-            </div>
-          </div>
-
-          <div class="invite-footerline">
-            <div class="note">* অনুষ্ঠানে প্রবেশের জন্য এই কার্ডটি দেখাতে হবে</div>
-            <div class="stamp">RSVP CONFIRMED</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card" style="text-align:center;">
-        <div class="actions" style="justify-content:center;">
-          <button id="downloadPng" class="btn btn-yellow">Download PNG</button>
-          <button id="downloadPdf" class="btn btn-green">Download PDF</button>
-          <button id="newEntry" class="btn btn-outline">New Response</button>
-        </div>
-        <p class="small">* PNG মোবাইলে সহজে শেয়ার করা যায়, PDF প্রিন্ট করার জন্য ভালো।</p>
-      </div>
-    </section>
-
-    <div class="footer">© RSVP WebApp</div>
-  </div>
-
-  <script src="app.js"></script>
+<div class="container">
+<header class="header">
+<div class="brand">
+<img alt="Logo" src="assets/logo.png"/>
+<div class="title">
+<h1>HSC Reception RSVP</h1>
+<p>Invitation Card</p>
+</div>
+</div>
+</header>
+<section class="hero">
+<h2>Invitation Card Ready ✅</h2>
+<p>নিচের কার্ডটি PNG অথবা PDF হিসেবে ডাউনলোড করতে পারবেন।</p>
+</section>
+<section class="invite-wrap">
+<!-- Invitation Card -->
+<div class="invite-scale"><div class="invite-card themed" id="inviteCard">
+<!-- Top Banner -->
+<div class="invite-banner">
+<!-- Left: Only Logo (NO extra university name text) -->
+<div class="banner-left">
+<div class="logo-box">
+<img alt="Logo" crossorigin="anonymous" decoding="async" loading="eager" src="assets/logo.png">
+</img></div>
+</div>
+<!-- Center: Festival -->
+<div class="banner-center">
+<div class="festival-top">এইচএসসি উত্তীর্ণ শিক্ষার্থী</div>
+<div class="festival-main">উৎসব</div>
+<div class="festival-year">২০২৫</div>
+</div>
+<!-- Right: SL Badge -->
+<div class="banner-right">
+<div class="sl-label">SL NO</div>
+<div class="sl-no" id="slNo">—</div>
+</div>
+</div>
+<!-- Body -->
+<div class="invite-body-pro">
+<div class="invite-nameblock">
+<div class="muted">Specially invited</div>
+<div class="big-name" id="cardName">Guest Name</div>
+</div>
+<div class="grid-2">
+<div class="info-box">
+<div class="cap">Board</div>
+<div class="val" id="mBoard">—</div>
+</div>
+<div class="info-box">
+<div class="cap">Registration No.</div>
+<div class="val" id="mReg">—</div>
+</div>
+<div class="info-box">
+<div class="cap">Roll No.</div>
+<div class="val" id="mRoll">—</div>
+</div>
+<div class="info-box">
+<div class="cap">Mobile</div>
+<div class="val" id="mPhone">—</div>
+</div>
+<div class="info-box">
+<div class="cap">Date</div>
+<div class="val" id="eventDate">—</div>
+</div>
+<div class="info-box">
+<div class="cap">Time</div>
+<div class="val" id="eventTime">—</div>
+</div>
+<div class="info-box span-2">
+<div class="cap">Venue</div>
+<div class="val" id="eventVenue">—</div>
+</div>
+</div>
+<div class="invite-footerline">
+<div class="note">* অনুষ্ঠানে প্রবেশের জন্য এই কার্ডটি দেখাতে হবে</div>
+<div class="stamp">RSVP CONFIRMED</div>
+</div>
+</div>
+</div></div>
+<div class="card" style="text-align:center;">
+<div class="actions" style="justify-content:center;">
+<button class="btn btn-yellow" id="downloadPng">Download PNG</button>
+<button class="btn btn-green" id="downloadPdf">Download PDF</button>
+<button class="btn btn-outline" id="newEntry">New Response</button>
+</div>
+<p class="small">* PNG মোবাইলে সহজে শেয়ার করা যায়, PDF প্রিন্ট করার জন্য ভালো।</p>
+</div>
+</section>
+<div class="footer">© RSVP WebApp</div>
+</div>
+<script src="app.js"></script>
 </body>
 </html>
