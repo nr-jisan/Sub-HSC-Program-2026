@@ -11,32 +11,6 @@ const EVENT_INFO = {
   organizer: "State University of Bangladesh"
 };
 
-function sendToServerJSONP(paramsObj){
-  return new Promise((resolve, reject) => {
-    const callbackName = "cb_" + Date.now() + "_" + Math.floor(Math.random()*1000);
-
-    window[callbackName] = (data) => {
-      try { resolve(data); }
-      finally {
-        delete window[callbackName];
-        script.remove();
-      }
-    };
-
-    const qs = new URLSearchParams({ ...paramsObj, callback: callbackName }).toString();
-    const script = document.createElement("script");
-    script.src = SCRIPT_URL + "?" + qs;
-    script.onerror = () => {
-      delete window[callbackName];
-      script.remove();
-      reject(new Error("Network / Apps Script error"));
-    };
-
-    document.body.appendChild(script);
-  });
-}
-
-
 function $(id){ return document.getElementById(id); }
 
 function showToast(type, msg){
@@ -52,34 +26,39 @@ function showToast(type, msg){
 function saveRSVP(data){
   localStorage.setItem("rsvp_data", JSON.stringify(data));
 }
-
 function loadRSVP(){
   const raw = localStorage.getItem("rsvp_data");
   return raw ? JSON.parse(raw) : null;
 }
 
-/* Duplicate set (client-side) */
-function getDuplicateSet(){
-  const raw = localStorage.getItem("rsvp_dupe_set");
-  try { return raw ? JSON.parse(raw) : {}; }
-  catch { return {}; }
-}
-function saveDuplicateSet(obj){
-  localStorage.setItem("rsvp_dupe_set", JSON.stringify(obj));
-}
-function makeKey(reg, roll){
-  return `${String(reg).trim()}|${String(roll).trim()}`.toLowerCase();
-}
+/* =========================
+   JSONP Sender (SERVER SIDE)
+   - avoids CORS issues
+========================= */
+function sendToServerJSONP(paramsObj){
+  return new Promise((resolve, reject) => {
+    const callbackName = "cb_" + Date.now() + "_" + Math.floor(Math.random()*1000);
 
-/* Serial counter (client-side) */
-function getNextSerial(){
-  const base = 100001;
-  const raw = localStorage.getItem("rsvp_serial_counter");
-  const n = raw ? parseInt(raw, 10) : base;
-  return Number.isFinite(n) ? n : base;
-}
-function markSerialUsed(serial){
-  localStorage.setItem("rsvp_serial_counter", String(serial + 1));
+    window[callbackName] = (data) => {
+      try { resolve(data); }
+      finally {
+        try { delete window[callbackName]; } catch(e){}
+        if(script && script.parentNode) script.parentNode.removeChild(script);
+      }
+    };
+
+    const qs = new URLSearchParams({ ...paramsObj, callback: callbackName }).toString();
+    const script = document.createElement("script");
+    script.src = SCRIPT_URL + "?" + qs;
+
+    script.onerror = () => {
+      try { delete window[callbackName]; } catch(e){}
+      if(script && script.parentNode) script.parentNode.removeChild(script);
+      reject(new Error("Network / Apps Script error"));
+    };
+
+    document.body.appendChild(script);
+  });
 }
 
 /* =========================
@@ -121,6 +100,7 @@ function setupIndex(){
 
 /* =========================
    Page: form.html
+   ✅ Serial + Duplicate handled SERVER-SIDE
 ========================= */
 function setupForm(){
   const form = $("rsvpForm");
@@ -129,9 +109,8 @@ function setupForm(){
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-
     const data = {
-      serial: String(serial),
+      serial: "", // ✅ server will return this
       coming: "Yes",
       name: $("name")?.value.trim() || "",
       board: $("board")?.value.trim() || "",
@@ -161,17 +140,6 @@ function setupForm(){
       return;
     }
 
-    // ✅ Duplicate prevention (client-side)
-    const key = makeKey(data.reg, data.roll);
-    const dupeSet = getDuplicateSet();
-    if(dupeSet[key]){
-      showToast("err", "এই রেজিস্ট্রেশন ও রোল দিয়ে ইতিমধ্যে সাবমিট করা হয়েছে। আবার করা যাবে না।");
-      return;
-    }
-
-    // Save locally for invite page
-    saveRSVP(data);
-
     if(!SCRIPT_URL || SCRIPT_URL.includes("PASTE_YOUR")){
       showToast("err", "SCRIPT_URL সেট করা হয়নি। app.js এ Apps Script Web App URL বসাও।");
       return;
@@ -183,44 +151,56 @@ function setupForm(){
       submitBtn.textContent = "Submitting...";
     }
 
-try {
-  const result = await sendToServerJSONP({
-    coming: data.coming,
-    name: data.name,
-    board: data.board,
-    reg: data.reg,
-    roll: data.roll,
-    phone: data.phone,
-    submittedAt: data.submittedAt
-  });
+    try{
+      // ✅ Send to Apps Script (JSONP)
+      const result = await sendToServerJSONP({
+        serial: "", // not needed; server generates
+        coming: data.coming,
+        name: data.name,
+        board: data.board,
+        reg: data.reg,
+        roll: data.roll,
+        phone: data.phone,
+        submittedAt: data.submittedAt
+      });
 
-  if(result.status === "duplicate"){
-    showToast("err", "এই রেজিস্ট্রেশন ও রোল দিয়ে ইতিমধ্যে সাবমিট করা হয়েছে।");
-    if(submitBtn){ submitBtn.disabled = false; submitBtn.textContent = "Submit"; }
-    return;
-  }
+      // ✅ Duplicate from server
+      if(result && result.status === "duplicate"){
+        showToast("err", "এই রেজিস্ট্রেশন ও রোল দিয়ে ইতিমধ্যে সাবমিট করা হয়েছে। আবার করা যাবে না।");
+        if(submitBtn){
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Submit";
+        }
+        return;
+      }
 
-  if(result.status !== "ok"){
-    showToast("err", result.message || "সাবমিট হয়নি। Apps Script চেক করো।");
-    if(submitBtn){ submitBtn.disabled = false; submitBtn.textContent = "Submit"; }
-    return;
-  }
+      // ✅ Any server error
+      if(!result || result.status !== "ok"){
+        showToast("err", (result && result.message) ? result.message : "সাবমিট হয়নি। Apps Script Deploy/URL/Sheet নাম চেক করো।");
+        if(submitBtn){
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Submit";
+        }
+        return;
+      }
 
-  // ✅ SERVER SERIAL
-  data.serial = String(result.serial);
+      // ✅ Server serial
+      data.serial = String(result.serial || "");
 
-  // Save locally for invite page
-  saveRSVP(data);
+      // Save locally for invite page
+      saveRSVP(data);
 
-  showToast("ok", "সাবমিট সফল হয়েছে! ইনভাইটেশন কার্ড তৈরি হচ্ছে...");
-  setTimeout(() => window.location.href = "invite.html", 700);
+      showToast("ok", "সাবমিট সফল হয়েছে! ইনভাইটেশন কার্ড তৈরি হচ্ছে...");
+      setTimeout(() => window.location.href = "invite.html", 700);
 
-} catch(err){
-  console.error(err);
-  showToast("err", "সাবমিট হয়নি। ইন্টারনেট/Apps Script Deploy/URL চেক করো।");
-  if(submitBtn){ submitBtn.disabled = false; submitBtn.textContent = "Submit"; }
-}
-
+    }catch(err){
+      console.error(err);
+      showToast("err", "সাবমিট হয়নি। ইন্টারনেট/Apps Script Deploy/URL চেক করো।");
+      if(submitBtn){
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Submit";
+      }
+    }
   });
 }
 
@@ -276,12 +256,12 @@ function setupInvite(){
       if(!card || typeof html2canvas === "undefined" || !window.jspdf) return;
 
       const canvas = await html2canvas(card, {
-  scale: 3,
-  useCORS: true,
-  allowTaint: true,
-  backgroundColor: null,
-  imageTimeout: 15000
-});
+        scale: 3,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: null,
+        imageTimeout: 15000
+      });
 
       const imgData = canvas.toDataURL("image/png");
 
