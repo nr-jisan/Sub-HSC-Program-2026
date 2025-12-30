@@ -5,9 +5,9 @@ const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyB8PsogVDbF6IBL5xMC
 
 const EVENT_INFO = {
   title: "এইচএসসি উত্তীর্ণ শিক্ষার্থী উৎসব ২০২৫",
-  date: "তারিখ: পরে জানানো হবে",
-  time: "সময়: পরে জানানো হবে",
-  venue: "ভেন্যু: পরে জানানো হবে",
+  date: "Date: 22 January 2026 ",
+  time: "Time: 10:00am",
+  venue: "Vanue: SUB Campus",
   organizer: "State University of Bangladesh"
 };
 

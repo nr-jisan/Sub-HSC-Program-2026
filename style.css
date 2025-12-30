@@ -626,4 +626,23 @@ body {
   flex-direction: row !important;
   align-items: center !important;
 }
+/* ===== Mobile View Scaling Fix ===== */
+@media (max-width: 600px) {
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .invitation-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .invitation-card {
+    transform: scale(0.85);
+    transform-origin: top center;
+  }
+}
 
