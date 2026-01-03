@@ -141,7 +141,7 @@ function setupForm(){
     }
 
     if(!SCRIPT_URL || SCRIPT_URL.includes("PASTE_YOUR")){
-      showToast("err", "SCRIPT_URL সেট করা হয়নি। app.js এ Apps Script Web App URL বসাও।");
+      showToast("err", "Server Error. Please Try Again Letter.");
       return;
     }
 
@@ -176,7 +176,7 @@ function setupForm(){
 
       // ✅ Any server error
       if(!result || result.status !== "ok"){
-        showToast("err", (result && result.message) ? result.message : "সাবমিট হয়নি। Apps Script Deploy/URL/Sheet নাম চেক করো।");
+        showToast("err", (result && result.message) ? result.message : "সাবমিট হয়নি। কিছুক্ষন পর পুনরায় চেষ্টা করুন");
         if(submitBtn){
           submitBtn.disabled = false;
           submitBtn.textContent = "Submit";
@@ -195,7 +195,7 @@ function setupForm(){
 
     }catch(err){
       console.error(err);
-      showToast("err", "সাবমিট হয়নি। ইন্টারনেট/Apps Script Deploy/URL চেক করো।");
+      showToast("err", "সাবমিট হয়নি। কিছুক্ষন পর আবার চেষ্টা করুন।");
       if(submitBtn){
         submitBtn.disabled = false;
         submitBtn.textContent = "Submit";
