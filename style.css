@@ -14,6 +14,14 @@
 }
 
 *{ box-sizing:border-box; margin:0; padding:0; }
+/* Hide invitation card from screen but keep it renderable */
+.invite-card {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  opacity: 1;
+}
+
 
 body{
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
