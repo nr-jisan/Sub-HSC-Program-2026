@@ -231,7 +231,7 @@ function setupInvite(){
   if($("eventVenue")) $("eventVenue").textContent = EVENT_INFO.venue;
   if($("eventOrg")) $("eventOrg").textContent = EVENT_INFO.organizer;
 
-  /* ✅ NEW: Fill mobile "details-only" view (if exists) */
+  /* ✅ Fill mobile "details-only" view (if exists) */
   if($("dSl")) $("dSl").textContent = data.serial || "—";
   if($("dName")) $("dName").textContent = data.name || "Guest";
   if($("dBoard")) $("dBoard").textContent = data.board || "—";
@@ -250,8 +250,15 @@ function setupInvite(){
       const card = $("inviteCard");
       if(!card || typeof html2canvas === "undefined") return;
 
+      // ✅ IMPORTANT FIX: temporarily show card for capture
+      const prevVis = card.style.visibility;
+      card.style.visibility = "visible";
+
       const canvas = await html2canvas(card, { scale: 2, useCORS: true });
       const url = canvas.toDataURL("image/png");
+
+      // ✅ hide again (for mobile)
+      card.style.visibility = prevVis || "hidden";
 
       const a = document.createElement("a");
       a.href = url;
@@ -267,6 +274,10 @@ function setupInvite(){
       const card = $("inviteCard");
       if(!card || typeof html2canvas === "undefined" || !window.jspdf) return;
 
+      // ✅ IMPORTANT FIX: temporarily show card for capture
+      const prevVis = card.style.visibility;
+      card.style.visibility = "visible";
+
       const canvas = await html2canvas(card, {
         scale: 3,
         useCORS: true,
@@ -274,6 +285,9 @@ function setupInvite(){
         backgroundColor: null,
         imageTimeout: 15000
       });
+
+      // ✅ hide again (for mobile)
+      card.style.visibility = prevVis || "hidden";
 
       const imgData = canvas.toDataURL("image/png");
 
@@ -301,7 +315,7 @@ function setupInvite(){
     });
   }
 
-  /* ✅ NEW: Mobile buttons (they trigger the same downloads) */
+  /* ✅ Mobile buttons (they trigger the same downloads) */
   const pngBtnMobile = $("downloadPngMobile");
   if(pngBtnMobile){
     pngBtnMobile.addEventListener("click", () => $("downloadPng")?.click());
