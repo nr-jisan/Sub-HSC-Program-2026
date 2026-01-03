@@ -251,7 +251,13 @@ function setupInvite(){
       const card = $("inviteCard");
       if(!card || typeof html2canvas === "undefined") return;
 
-      const canvas = await html2canvas(card, { scale: 2, useCORS: true });
+      const canvas = await html2canvas(card, {
+        scale: 4,                 // ✅ sharper PNG
+        useCORS: true,
+        allowTaint: false,
+        backgroundColor: "#ffffff"
+      });
+
       const url = canvas.toDataURL("image/png");
 
       const a = document.createElement("a");
@@ -269,14 +275,15 @@ function setupInvite(){
       if(!card || typeof html2canvas === "undefined" || !window.jspdf) return;
 
       const canvas = await html2canvas(card, {
-        scale: 3,
+        scale: 4,
         useCORS: true,
         allowTaint: true,
         backgroundColor: null,
         imageTimeout: 15000
       });
 
-      const imgData = canvas.toDataURL("image/png");
+      const imgData = canvas.toDataURL("image/jpeg", 1.0); // ✅ max quality
+
 
       const { jsPDF } = window.jspdf;
       const pdf = new jsPDF("p", "mm", "a4");
