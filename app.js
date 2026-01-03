@@ -231,6 +231,19 @@ function setupInvite(){
   if($("eventVenue")) $("eventVenue").textContent = EVENT_INFO.venue;
   if($("eventOrg")) $("eventOrg").textContent = EVENT_INFO.organizer;
 
+    // ✅ Fill Visible Details (NOT the card)
+  if ($("dSlNo")) $("dSlNo").textContent = data.serial || "—";
+  if ($("dName")) $("dName").textContent = data.name || "Guest";
+  if ($("dBoard")) $("dBoard").textContent = data.board || "—";
+  if ($("dReg")) $("dReg").textContent = data.reg || "—";
+  if ($("dRoll")) $("dRoll").textContent = data.roll || "—";
+  if ($("dPhone")) $("dPhone").textContent = data.phone || "—";
+
+  if ($("dDate")) $("dDate").textContent = EVENT_INFO.date;
+  if ($("dTime")) $("dTime").textContent = EVENT_INFO.time;
+  if ($("dVenue")) $("dVenue").textContent = EVENT_INFO.venue;
+
+
   // Download PNG
   const pngBtn = $("downloadPng");
   if(pngBtn){

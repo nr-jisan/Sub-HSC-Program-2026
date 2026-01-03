@@ -264,6 +264,56 @@ select{
    INVITATION CARD (CLEAN + NO STRETCH)
 ========================= */
 
+/* Visible details (shown on page) */
+.details-card{
+  text-align: left;
+}
+
+.details-title{
+  font-size: 18px;
+  font-weight: 1000;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.details-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.details-item{
+  border-radius: 16px;
+  border: 1px solid rgba(15,23,42,.12);
+  background: rgba(255,255,255,.75);
+  padding: 12px;
+}
+
+.details-item .cap{
+  font-size: 12px;
+  font-weight: 900;
+  color: rgba(17,24,39,.60);
+}
+
+.details-item .val{
+  margin-top: 6px;
+  font-size: 16px;
+  font-weight: 1000;
+  color: rgba(17,24,39,.92);
+  word-break: break-word;
+}
+
+.details-span-2{
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 720px){
+  .details-grid{
+    grid-template-columns: 1fr;
+  }
+}
+
+
 .invite-wrap{ margin-top: 16px; }
 
 .invite-card{
