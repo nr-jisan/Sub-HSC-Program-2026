@@ -68,8 +68,7 @@ function onlyDigits(str){
   return /^[0-9]+$/.test(str);
 }
 function validBDPhone(str){
-  // 01XXXXXXXXX (11 digits)
-  return /^01\d{9}$/.test(str);
+  return /^01\d{9}$/.test(str); // 01XXXXXXXXX
 }
 function safeFileName(name){
   return String(name || "Guest")
@@ -79,28 +78,82 @@ function safeFileName(name){
 }
 
 /* =========================
+   IMPORTANT: Capture helper
+   ✅ Makes hidden card capturable on mobile
+========================= */
+async function captureElementAsCanvas(el, opts = {}){
+  if(!el || typeof html2canvas === "undefined") throw new Error("html2canvas missing");
+
+  // Save previous inline styles
+  const prev = {
+    visibility: el.style.visibility,
+    position: el.style.position,
+    left: el.style.left,
+    top: el.style.top,
+    right: el.style.right,
+    bottom: el.style.bottom,
+    zIndex: el.style.zIndex,
+    transform: el.style.transform,
+    opacity: el.style.opacity,
+    pointerEvents: el.style.pointerEvents,
+    width: el.style.width
+  };
+
+  // ✅ TEMP: bring card into viewport (works on mobile)
+  el.style.visibility = "visible";
+  el.style.position = "fixed";
+  el.style.left = "0";
+  el.style.top = "0";
+  el.style.right = "auto";
+  el.style.bottom = "auto";
+  el.style.zIndex = "999999";
+  el.style.transform = "none";
+  el.style.opacity = "1";
+  el.style.pointerEvents = "none";
+
+  // A small wait helps mobile paint the element before capture
+  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+  // Use safe scale for mobile memory (2 is good)
+  const scale = opts.scale ?? 2;
+
+  const canvas = await html2canvas(el, {
+    scale,
+    useCORS: true,
+    allowTaint: true,
+    backgroundColor: null,
+    imageTimeout: 15000
+  });
+
+  // Restore previous inline styles
+  el.style.visibility = prev.visibility;
+  el.style.position = prev.position;
+  el.style.left = prev.left;
+  el.style.top = prev.top;
+  el.style.right = prev.right;
+  el.style.bottom = prev.bottom;
+  el.style.zIndex = prev.zIndex;
+  el.style.transform = prev.transform;
+  el.style.opacity = prev.opacity;
+  el.style.pointerEvents = prev.pointerEvents;
+  el.style.width = prev.width;
+
+  return canvas;
+}
+
+/* =========================
    Page: index.html
 ========================= */
 function setupIndex(){
   const yesBtn = $("yesBtn");
   const noBtn  = $("noBtn");
 
-  if(yesBtn){
-    yesBtn.addEventListener("click", () => {
-      window.location.href = "form.html";
-    });
-  }
-
-  if(noBtn){
-    noBtn.addEventListener("click", () => {
-      window.location.href = "thankyou.html";
-    });
-  }
+  if(yesBtn) yesBtn.addEventListener("click", () => window.location.href = "form.html");
+  if(noBtn)  noBtn.addEventListener("click", () => window.location.href = "thankyou.html");
 }
 
 /* =========================
    Page: form.html
-   ✅ Serial + Duplicate handled SERVER-SIDE
 ========================= */
 function setupForm(){
   const form = $("rsvpForm");
@@ -110,7 +163,7 @@ function setupForm(){
     e.preventDefault();
 
     const data = {
-      serial: "", // ✅ server will return this
+      serial: "",
       coming: "Yes",
       name: $("name")?.value.trim() || "",
       board: $("board")?.value.trim() || "",
@@ -120,13 +173,10 @@ function setupForm(){
       submittedAt: new Date().toISOString()
     };
 
-    // ✅ Strict empty validation
     if(!data.name || !data.board || !data.reg || !data.roll || !data.phone){
       showToast("err", "সবগুলো ঘর পূরণ করো। কোনো ঘর খালি রাখা যাবে না।");
       return;
     }
-
-    // ✅ Format validations
     if(!onlyDigits(data.reg)){
       showToast("err", "রেজিস্ট্রেশন নম্বর শুধুমাত্র সংখ্যা হতে হবে।");
       return;
@@ -152,9 +202,8 @@ function setupForm(){
     }
 
     try{
-      // ✅ Send to Apps Script (JSONP)
       const result = await sendToServerJSONP({
-        serial: "", // not needed; server generates
+        serial: "",
         coming: data.coming,
         name: data.name,
         board: data.board,
@@ -164,7 +213,6 @@ function setupForm(){
         submittedAt: data.submittedAt
       });
 
-      // ✅ Duplicate from server
       if(result && result.status === "duplicate"){
         showToast("err", "এই রেজিস্ট্রেশন ও রোল দিয়ে ইতিমধ্যে সাবমিট করা হয়েছে। আবার করা যাবে না।");
         if(submitBtn){
@@ -174,9 +222,8 @@ function setupForm(){
         return;
       }
 
-      // ✅ Any server error
       if(!result || result.status !== "ok"){
-        showToast("err", (result && result.message) ? result.message : "সাবমিট হয়নি। Apps Script Deploy/URL/Sheet নাম চেক করো।");
+        showToast("err", (result && result.message) ? result.message : "সাবমিট হয়নি। Deploy/URL/Sheet নাম চেক করো।");
         if(submitBtn){
           submitBtn.disabled = false;
           submitBtn.textContent = "Submit";
@@ -184,10 +231,7 @@ function setupForm(){
         return;
       }
 
-      // ✅ Server serial
       data.serial = String(result.serial || "");
-
-      // Save locally for invite page
       saveRSVP(data);
 
       showToast("ok", "সাবমিট সফল হয়েছে! ইনভাইটেশন কার্ড তৈরি হচ্ছে...");
@@ -225,84 +269,67 @@ function setupInvite(){
   if($("mPhone")) $("mPhone").textContent = data.phone || "—";
 
   // Fill event info (Card)
-  if($("eventTitle")) $("eventTitle").textContent = EVENT_INFO.title;
   if($("eventDate")) $("eventDate").textContent = EVENT_INFO.date;
   if($("eventTime")) $("eventTime").textContent = EVENT_INFO.time;
   if($("eventVenue")) $("eventVenue").textContent = EVENT_INFO.venue;
-  if($("eventOrg")) $("eventOrg").textContent = EVENT_INFO.organizer;
 
-  /* ✅ Fill mobile "details-only" view (if exists) */
+  // Fill details view (shown on ALL devices in your new requirement)
   if($("dSl")) $("dSl").textContent = data.serial || "—";
   if($("dName")) $("dName").textContent = data.name || "Guest";
   if($("dBoard")) $("dBoard").textContent = data.board || "—";
   if($("dReg")) $("dReg").textContent = data.reg || "—";
   if($("dRoll")) $("dRoll").textContent = data.roll || "—";
   if($("dPhone")) $("dPhone").textContent = data.phone || "—";
-
   if($("dDate")) $("dDate").textContent = EVENT_INFO.date;
   if($("dTime")) $("dTime").textContent = EVENT_INFO.time;
   if($("dVenue")) $("dVenue").textContent = EVENT_INFO.venue;
 
-  // Download PNG (from hidden or visible card)
+  const card = $("inviteCard");
+
+  // Download PNG
   const pngBtn = $("downloadPng");
   if(pngBtn){
     pngBtn.addEventListener("click", async () => {
-      const card = $("inviteCard");
-      if(!card || typeof html2canvas === "undefined") return;
-
-      // ✅ IMPORTANT FIX: temporarily show card for capture
-      const prevVis = card.style.visibility;
-      card.style.visibility = "visible";
-
-      const canvas = await html2canvas(card, { scale: 2, useCORS: true });
-      const url = canvas.toDataURL("image/png");
-
-      // ✅ hide again (for mobile)
-      card.style.visibility = prevVis || "hidden";
-
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `Invitation-${safeFileName(data.name)}-SL${data.serial}.png`;
-      a.click();
+      try{
+        const canvas = await captureElementAsCanvas(card, { scale: 2 });
+        const url = canvas.toDataURL("image/png");
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `Invitation-${safeFileName(data.name)}-SL${data.serial}.png`;
+        a.click();
+      }catch(e){
+        console.error(e);
+        alert("Download failed. Please try again.");
+      }
     });
   }
 
-  // Download PDF (from hidden or visible card)
+  // Download PDF
   const pdfBtn = $("downloadPdf");
   if(pdfBtn){
     pdfBtn.addEventListener("click", async () => {
-      const card = $("inviteCard");
-      if(!card || typeof html2canvas === "undefined" || !window.jspdf) return;
+      try{
+        if(!window.jspdf) return;
 
-      // ✅ IMPORTANT FIX: temporarily show card for capture
-      const prevVis = card.style.visibility;
-      card.style.visibility = "visible";
+        const canvas = await captureElementAsCanvas(card, { scale: 2 });
+        const imgData = canvas.toDataURL("image/png");
 
-      const canvas = await html2canvas(card, {
-        scale: 3,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: null,
-        imageTimeout: 15000
-      });
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF("p", "mm", "a4");
 
-      // ✅ hide again (for mobile)
-      card.style.visibility = prevVis || "hidden";
+        const pageW = 210, pageH = 297;
+        const imgW = pageW - 20;
+        const imgH = (canvas.height / canvas.width) * imgW;
 
-      const imgData = canvas.toDataURL("image/png");
+        const x = 10;
+        const y = Math.max(10, (pageH - imgH) / 2);
 
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF("p", "mm", "a4");
-
-      const pageW = 210, pageH = 297;
-      const imgW = pageW - 20;
-      const imgH = (canvas.height / canvas.width) * imgW;
-
-      const x = 10;
-      const y = Math.max(10, (pageH - imgH) / 2);
-
-      pdf.addImage(imgData, "PNG", x, y, imgW, imgH);
-      pdf.save(`Invitation-${safeFileName(data.name)}-SL${data.serial}.pdf`);
+        pdf.addImage(imgData, "PNG", x, y, imgW, imgH);
+        pdf.save(`Invitation-${safeFileName(data.name)}-SL${data.serial}.pdf`);
+      }catch(e){
+        console.error(e);
+        alert("Download failed. Please try again.");
+      }
     });
   }
 
@@ -315,21 +342,10 @@ function setupInvite(){
     });
   }
 
-  /* ✅ Mobile buttons (they trigger the same downloads) */
-  const pngBtnMobile = $("downloadPngMobile");
-  if(pngBtnMobile){
-    pngBtnMobile.addEventListener("click", () => $("downloadPng")?.click());
-  }
-
-  const pdfBtnMobile = $("downloadPdfMobile");
-  if(pdfBtnMobile){
-    pdfBtnMobile.addEventListener("click", () => $("downloadPdf")?.click());
-  }
-
-  const newBtnMobile = $("newEntryMobile");
-  if(newBtnMobile){
-    newBtnMobile.addEventListener("click", () => $("newEntry")?.click());
-  }
+  // Mobile buttons trigger same
+  $("downloadPngMobile")?.addEventListener("click", () => $("downloadPng")?.click());
+  $("downloadPdfMobile")?.addEventListener("click", () => $("downloadPdf")?.click());
+  $("newEntryMobile")?.addEventListener("click", () => $("newEntry")?.click());
 }
 
 /* =========================
