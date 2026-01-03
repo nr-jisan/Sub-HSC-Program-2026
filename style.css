@@ -14,6 +14,64 @@
 }
 
 *{ box-sizing:border-box; margin:0; padding:0; }
+/* =========================
+   MOBILE: Hide card preview, show details only
+   Card stays in DOM (off-screen) so html2canvas can still download it
+========================= */
+
+.details-only { display: none; }
+.details-title{
+  font-size: 18px;
+  font-weight: 1000;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.details-grid{
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.details-row{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(12,143,87,.18);
+  background: rgba(255,255,255,.85);
+}
+
+.details-row span{
+  color: rgba(17,24,39,.65);
+  font-weight: 900;
+  font-size: 13px;
+}
+
+.details-row b{
+  font-size: 15px;
+  font-weight: 1000;
+  text-align: right;
+  word-break: break-word;
+}
+
+.details-full{ justify-content: space-between; }
+
+@media (max-width: 720px){
+  /* show details */
+  .details-only { display: block; }
+
+  /* Hide the card preview from the page (no left shift), but keep it renderable */
+  #inviteCard{
+    position: absolute !important;
+    left: -10000px !important;
+    top: 0 !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+}
 
 body{
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;

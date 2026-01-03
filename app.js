@@ -217,21 +217,33 @@ function setupInvite(){
   // Fill Serial
   if($("slNo")) $("slNo").textContent = data.serial || "—";
 
-  // Fill user info
+  // Fill user info (Card)
   if($("cardName")) $("cardName").textContent = data.name || "Guest";
   if($("mBoard")) $("mBoard").textContent = data.board || "—";
   if($("mReg")) $("mReg").textContent = data.reg || "—";
   if($("mRoll")) $("mRoll").textContent = data.roll || "—";
   if($("mPhone")) $("mPhone").textContent = data.phone || "—";
 
-  // Fill event info
+  // Fill event info (Card)
   if($("eventTitle")) $("eventTitle").textContent = EVENT_INFO.title;
   if($("eventDate")) $("eventDate").textContent = EVENT_INFO.date;
   if($("eventTime")) $("eventTime").textContent = EVENT_INFO.time;
   if($("eventVenue")) $("eventVenue").textContent = EVENT_INFO.venue;
   if($("eventOrg")) $("eventOrg").textContent = EVENT_INFO.organizer;
 
-  // Download PNG
+  /* ✅ NEW: Fill mobile "details-only" view (if exists) */
+  if($("dSl")) $("dSl").textContent = data.serial || "—";
+  if($("dName")) $("dName").textContent = data.name || "Guest";
+  if($("dBoard")) $("dBoard").textContent = data.board || "—";
+  if($("dReg")) $("dReg").textContent = data.reg || "—";
+  if($("dRoll")) $("dRoll").textContent = data.roll || "—";
+  if($("dPhone")) $("dPhone").textContent = data.phone || "—";
+
+  if($("dDate")) $("dDate").textContent = EVENT_INFO.date;
+  if($("dTime")) $("dTime").textContent = EVENT_INFO.time;
+  if($("dVenue")) $("dVenue").textContent = EVENT_INFO.venue;
+
+  // Download PNG (from hidden or visible card)
   const pngBtn = $("downloadPng");
   if(pngBtn){
     pngBtn.addEventListener("click", async () => {
@@ -248,7 +260,7 @@ function setupInvite(){
     });
   }
 
-  // Download PDF
+  // Download PDF (from hidden or visible card)
   const pdfBtn = $("downloadPdf");
   if(pdfBtn){
     pdfBtn.addEventListener("click", async () => {
@@ -287,6 +299,22 @@ function setupInvite(){
       localStorage.removeItem("rsvp_data");
       window.location.href = "index.html";
     });
+  }
+
+  /* ✅ NEW: Mobile buttons (they trigger the same downloads) */
+  const pngBtnMobile = $("downloadPngMobile");
+  if(pngBtnMobile){
+    pngBtnMobile.addEventListener("click", () => $("downloadPng")?.click());
+  }
+
+  const pdfBtnMobile = $("downloadPdfMobile");
+  if(pdfBtnMobile){
+    pdfBtnMobile.addEventListener("click", () => $("downloadPdf")?.click());
+  }
+
+  const newBtnMobile = $("newEntryMobile");
+  if(newBtnMobile){
+    newBtnMobile.addEventListener("click", () => $("newEntry")?.click());
   }
 }
 
