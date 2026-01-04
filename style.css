@@ -88,8 +88,8 @@ body{
 
 /* HERO */
 .hero{
-  margin-top: 18px;
-  padding: 26px 18px;
+  margin-top: 12px;              /* ✅ CHANGED (was 18px) */
+  padding: 18px 14px;            /* ✅ CHANGED (was 26px 18px) */
   border-radius: 22px;
   border: 2px solid rgba(12,143,87,.18);
   background:
@@ -98,10 +98,65 @@ body{
     linear-gradient(180deg, rgba(255,255,255,.90) 0%, rgba(248,253,249,.78) 100%);
   box-shadow: 0 18px 40px rgba(0,0,0,.08);
   display:grid;
-  gap: 14px;
+  gap: 10px;                     /* ✅ CHANGED (was 14px) */
   text-align:center;
   align-items:center;
   justify-items:center;
+}
+/* ===============================
+   HOME PAGE SPACE FIX (ONLY INDEX)
+   =============================== */
+
+/* Tighten hero only on home page */
+.hero.hero-center{
+  padding: 16px 14px !important;
+  gap: 8px !important;
+  min-height: unset !important;
+}
+
+/* Reduce space around the logo */
+.hero.hero-center .banner-center{
+  margin: 4px 0 0 !important;
+  padding: 0 !important;
+}
+
+/* Control festival logo size */
+.hero.hero-center .festival-logo{
+  max-width: 190px;
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+/* Reduce poster text spacing */
+.hero.hero-center .poster-title{
+  margin-top: 6px !important;
+  margin-bottom: 4px !important;
+}
+
+/* Mobile optimization */
+@media (max-width: 600px){
+  .hero.hero-center{
+    padding: 14px 12px !important;
+    gap: 6px !important;
+  }
+
+  .hero.hero-center .festival-logo{
+    max-width: 160px;
+  }
+}
+
+
+/* ✅ ADDED: prevent any full-height effect if hero-center exists */
+.hero-center{
+  min-height: auto;
+}
+
+/* ✅ ADDED: reduce extra space around the logo/banner inside hero only */
+.hero .banner-center{
+  margin: 6px 0 2px;
+  padding: 0;
 }
 
 .hero h2{
@@ -704,3 +759,15 @@ body {
   }
 }
 
+/* ✅ Festival logo size (reduced to save space) */
+.festival-logo {
+  max-width: 220px;   /* ✅ CHANGED (was 260px) */
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+@media (max-width: 600px) {
+  .festival-logo {
+    max-width: 180px; /* ✅ CHANGED (was 200px) */
+  }
+}
